@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>気密測定 報告書ツール</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%232496ed'/%3E%3Ctext x='90' y='120' font-size='96' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#f3f5f8;--card:#fff;--ink:#1a2332;--muted:#5b6b80;--line:#dbe2ec;--blue:#2496ed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Segoe UI",Meiryo,system-ui,sans-serif;
+min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.wrap{max-width:460px;width:100%;text-align:center}
+.logo{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#2496ed,#1a73c7);
+display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:32px;margin:0 auto 14px}
+h1{font-size:21px;margin:0 0 4px}
+.sub{font-size:13px;color:var(--muted);margin-bottom:22px}
+a.tile{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);
+border-radius:16px;box-shadow:0 1px 3px rgba(20,40,70,.06);padding:18px 20px;margin-bottom:14px;text-align:left;
+transition:.12s}
+a.tile:active{transform:translateY(1px)}
+a.tile .t{font-size:16px;font-weight:700}
+a.tile .d{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+a.tile .t::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;
+background:var(--blue);margin-right:8px;vertical-align:middle}
+.foot{font-size:11px;color:#8a97a8;margin-top:8px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="logo">C</div>
+<h1>気密測定 報告書ツール</h1>
+<div class="sub">JIS A 2201 準拠</div>
+<a class="tile" href="report.html">
+<div class="t">現場用｜測定データ収集</div>
+<div class="d">現場でΔP・Qを入力してC値・R²・合否を確認。良い回を選んでデータを送信。</div>
+</a>
+<a class="tile" href="office.html">
+<div class="t">事務所用｜報告書データ作成</div>
+<div class="d">受け取ったデータに設計情報と写真を追加して、報告書用データを作成。</div>
+</a>
+<div class="foot">数値は参考値です。正式判定は報告書側で確定します。<br>すべて端末内で処理し、ネットに送信しません。</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>気密測定 現場データ収集</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%232496ed'/%3E%3Ctext x='90' y='118' font-size='84' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E測%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+--bg:#f3f5f8; --card:#ffffff; --ink:#1a2332; --muted:#5b6b80; --line:#dbe2ec;
+--blue:#2496ed; --green:#1a9d54; --red:#d64545; --amber:#c98a1a;
+--radius:16px; --shadow:0 1px 3px rgba(20,40,70,.06),0 1px 2px rgba(20,40,70,.04);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Segoe UI",Meiryo,system-ui,sans-serif;
+-webkit-text-size-adjust:100%;padding:0 0 40px}
+.wrap{max-width:560px;margin:0 auto;padding:16px 14px}
+header{display:flex;align-items:center;gap:12px;margin:6px 2px 16px}
+.logo{width:50px;height:50px;border-radius:13px;background:linear-gradient(135deg,#2496ed,#1a73c7);
+display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:24px;flex:0 0 auto}
+h1{font-size:19px;margin:0;line-height:1.3}
+header .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+padding:15px 15px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 12px;padding-left:9px;border-left:4px solid var(--blue)}
+label.f{display:block;margin-bottom:11px}
+label.f .lab{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+label.f .lab small{color:#8a97a8;font-weight:400}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;font-size:16px;
+background:#fafcfe;color:var(--ink);font-family:inherit}
+input:focus,select:focus{outline:none;border-color:var(--blue);background:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.unit{display:flex;align-items:center;gap:7px}
+.unit .u{font-size:13px;color:var(--muted);min-width:26px}
+.setbox{border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:12px;background:#fbfdff;transition:.15s}
+.setbox.use{border-color:#9fd0f5;background:#f2f9ff;box-shadow:0 0 0 2px rgba(36,150,237,.10)}
+.sethead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+.sethead .t{font-size:13.5px;font-weight:700}
+.usechk{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink);cursor:pointer;user-select:none;
+background:#fff;border:1px solid var(--line);border-radius:9px;padding:6px 10px}
+.usechk.on{background:#2496ed;border-color:#2496ed;color:#fff;font-weight:700}
+.usechk input{display:none}
+.delset{background:#fff;border:1px solid var(--line);border-radius:8px;color:var(--red);font-size:12px;padding:6px 9px;cursor:pointer}
+table.pts{width:100%;border-collapse:collapse}
+table.pts th{font-size:11px;color:var(--muted);font-weight:600;padding:0 0 5px;text-align:left}
+table.pts td{padding:0 0 7px}
+table.pts td:first-child{width:28px;color:var(--muted);font-size:13px}
+table.pts input{padding:9px 10px;font-size:15px}
+.gap{padding:0 4px}
+.res{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:4px;font-size:13px}
+.res .pill{background:#f2f6fb;border:1px solid var(--line);border-radius:9px;padding:5px 9px}
+.res .pill b{font-weight:700}
+.badge{font-size:12px;font-weight:700;border-radius:9px;padding:5px 11px}
+.badge.ok{background:#e3f6e9;color:var(--green)}
+.badge.ng{background:#fdeaea;color:var(--red)}
+.badge.na{background:#eef1f5;color:var(--muted)}
+.addbtn{width:100%;padding:12px;border:1.5px dashed var(--blue);border-radius:12px;background:#f1f8ff;color:#1a6fb5;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+.selstat{font-size:13px;text-align:center;margin:2px 0 12px;color:var(--muted)}
+.selstat b{color:var(--ink)}
+.selstat.over b{color:var(--red)}
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,#2496ed,#1a73c7);color:#fff;box-shadow:0 3px 10px rgba(36,150,237,.28)}
+.btn.primary:disabled{background:#c3ccd6;box-shadow:none}
+.btn.primary:active:not(:disabled){transform:translateY(1px)}
+.btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.tip{background:#f1f8ff;border:1px solid #cfe6fb;color:#1a4a7a;border-radius:12px;padding:12px 14px;font-size:12.5px;line-height:1.6;margin-top:6px}
+.tip b{color:#0d3b66}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;
+background:#1a2332;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;pointer-events:none;transition:.25s;z-index:50;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.foot{text-align:center;font-size:11px;color:#8a97a8;margin-top:18px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="logo">測</div>
+<div>
+<h1>気密測定 現場データ収集</h1>
+<div class="sub">測って合否を確認 →「データをコピー」→ LINEで送る</div>
+</div>
+</header>
+
+<div class="card">
+<h2>物件・試験情報</h2>
+<label class="f"><span class="lab">物件名</span><input id="bldg" type="text" placeholder="例：〇〇様邸"></label>
+<div class="row2">
+<label class="f"><span class="lab">試験日</span><input id="date" type="date"></label>
+<label class="f"><span class="lab">時間帯 <small>(任意)</small></span><input id="time" type="text" placeholder="9:30〜10:30"></label>
+</div>
+</div>
+
+<div class="card">
+<h2>測定時の環境</h2>
+<div class="row2">
+<label class="f"><span class="lab">室内温度</span><div class="unit"><input id="tin" type="number" inputmode="decimal" step="0.1" placeholder="例：20"><span class="u">℃</span></div></label>
+<label class="f"><span class="lab">外気温度 <small>(C値に影響)</small></span><div class="unit"><input id="tout" type="number" inputmode="decimal" step="0.1" placeholder="例：5"><span class="u">℃</span></div></label>
+</div>
+<div class="row2">
+<label class="f"><span class="lab">天候 <small>(任意)</small></span><input id="wx" type="text" placeholder="晴れ"></label>
+<label class="f"><span class="lab">気圧 <small>(任意)</small></span><div class="unit"><input id="press" type="number" inputmode="decimal" step="0.1" placeholder="1013"><span class="u">hPa</span></div></label>
+</div>
+<div class="row3">
+<label class="f"><span class="lab">風速</span><div class="unit"><input id="wspd" type="number" inputmode="decimal" step="0.1" placeholder="2"><span class="u">m/s</span></div></label>
+<label class="f"><span class="lab">風向</span><input id="wdir" type="text" placeholder="北西"></label>
+<label class="f"><span class="lab">風速位置</span><input id="wpos" type="text" placeholder="予報データ"></label>
+</div>
+<label class="f" style="margin-bottom:0"><span class="lab">延床面積 <small>(概算・参考C値の計算用／任意)</small></span><div class="unit"><input id="area" type="number" inputmode="decimal" step="0.01" placeholder="例：120"><span class="u">m²</span></div></label>
+</div>
+
+<div class="card">
+<h2>測定値（何回でも追加OK・使う回を選ぶ）</h2>
+<div id="sets"></div>
+<button class="addbtn" id="addBtn">＋ 測定を追加</button>
+<div class="tip" style="margin-top:12px">各回3〜5点入れると <b>n</b>・<b>R²</b>・合否が出ます（<b>n＝1〜2</b> かつ <b>R²≧0.98</b> でOK）。良い回の「<b>報告書に使う</b>」をON（<b>最大3件</b>）。選んだ回が報告書の1〜3回目になります。</div>
+</div>
+
+<div class="selstat" id="selstat"></div>
+<div class="actions">
+<button class="btn primary" id="copyBtn">📋 データをコピー（LINEに貼って送る）</button>
+<button class="btn ghost" id="saveBtn">💾 ファイル(.json)で保存</button>
+</div>
+
+<div class="tip" style="margin-top:14px">
+<b>写真も一緒にLINEで送ってください</b><br>
+① 中間写真　② 完成写真　③ 測定位置（間取り）　④ 測定器のプリントアウト（数字が写るように）
+</div>
+
+<div class="foot">気密計算 現場用 ／ JIS A 2201 準拠<br>数値は参考値です。正式判定は報告書側で確定します。</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const NPTS=5, MAXUSE=3, MAXSETS=10;
+let sets=[];            // {use:bool}
+let seq=0;
+
+document.getElementById('date').value=new Date().toISOString().slice(0,10);
+const setsEl=document.getElementById('sets');
+
+function addSet(use){
+  if(sets.length>=MAXSETS){ toast('測定はここまでにしてください'); return; }
+  sets.push({id:++seq, use:!!use});
+  render();
+}
+function delSet(idx){ sets.splice(idx,1); render(); }
+
+function render(){
+  setsEl.innerHTML='';
+  sets.forEach((s,idx)=>{
+    const box=document.createElement('div');
+    box.className='setbox'+(s.use?' use':'');
+    let rows='';
+    for(let r=0;r<NPTS;r++){
+      const dp=s['dP'+r]!=null?s['dP'+r]:'';
+      const q=s['Q'+r]!=null?s['Q'+r]:'';
+      rows+=`<tr><td>${r+1}</td>
+        <td class="gap"><input type="number" inputmode="decimal" step="0.1" data-i="${idx}" data-c="dP" data-r="${r}" value="${dp}" placeholder="ΔP"></td>
+        <td class="gap"><input type="number" inputmode="decimal" step="1" data-i="${idx}" data-c="Q" data-r="${r}" value="${q}" placeholder="Q"></td></tr>`;
+    }
+    box.innerHTML=`
+      <div class="sethead">
+        <span class="t">測定 ${idx+1}</span>
+        <div style="display:flex;gap:7px;align-items:center">
+          <label class="usechk${s.use?' on':''}"><input type="checkbox" data-use="${idx}" ${s.use?'checked':''}>報告書に使う</label>
+          ${sets.length>1?`<button class="delset" data-del="${idx}">削除</button>`:''}
+        </div>
+      </div>
+      <table class="pts"><thead><tr><th></th><th>差圧 ΔP (Pa)</th><th>風量 Q (m³/h)</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="res" data-res="${idx}"></div>`;
+    setsEl.appendChild(box);
+  });
+  recalc();
+}
+
+// 入力保持＋再計算
+setsEl.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.c!=null){ const i=+t.dataset.i; sets[i][t.dataset.c+t.dataset.r]=t.value; recalc(); }
+});
+setsEl.addEventListener('change',e=>{
+  if(e.target.dataset.use!=null){
+    const i=+e.target.dataset.use;
+    sets[i].use=e.target.checked;
+    render();
+  }
+});
+setsEl.addEventListener('click',e=>{
+  if(e.target.dataset.del!=null) delSet(+e.target.dataset.del);
+});
+document.getElementById('addBtn').addEventListener('click',()=>addSet(false));
+['tout','area'].forEach(id=>document.getElementById(id).addEventListener('input',recalc));
+
+// 回帰（power: y=lnQ, x=ln(ΔP/9.8)）
+function fitSet(s){
+  const pts=[];
+  for(let r=0;r<NPTS;r++){
+    const dp=parseFloat(s['dP'+r]), q=parseFloat(s['Q'+r]);
+    if(isFinite(dp)&&dp>0&&isFinite(q)&&q>0) pts.push([Math.log(dp/9.8),Math.log(q)]);
+  }
+  if(pts.length<3) return {ok:false,count:pts.length};
+  const N=pts.length; let sx=0,sy=0; pts.forEach(p=>{sx+=p[0];sy+=p[1];});
+  const mx=sx/N,my=sy/N; let sxx=0,sxy=0,syy=0;
+  pts.forEach(p=>{const dx=p[0]-mx,dy=p[1]-my;sxx+=dx*dx;sxy+=dx*dy;syy+=dy*dy;});
+  const slope=sxy/sxx, inter=my-slope*mx, r2=(sxy*sxy)/(sxx*syy);
+  return {ok:true,count:N,n:1/slope,r2,Q98:Math.exp(inter)};
+}
+function refC(Q98){
+  const tout=parseFloat(document.getElementById('tout').value);
+  const S=parseFloat(document.getElementById('area').value);
+  if(!isFinite(tout)||!isFinite(S)||S<=0) return null;
+  const rho=353/(273+tout);
+  const b=(1/0.36)*Math.sqrt(rho/2)*Math.sqrt(1/9.8);
+  let aA=Q98*b;
+  const d=2-Math.floor(Math.log10(Math.abs(aA)));
+  aA=Math.round(aA*Math.pow(10,d))/Math.pow(10,d);
+  return aA/S;
+}
+function recalc(){
+  sets.forEach((s,idx)=>{
+    const res=setsEl.querySelector(`[data-res="${idx}"]`); if(!res) return;
+    const f=fitSet(s);
+    if(!f.ok){ res.innerHTML=`<span class="badge na">${f.count||0}点（3点以上で判定）</span>`; return; }
+    const pass=(f.n>=1&&f.n<=2&&f.r2>=0.98), c=refC(f.Q98);
+    res.innerHTML=`<span class="pill">n <b>${f.n.toFixed(2)}</b></span>`+
+      `<span class="pill">R² <b>${f.r2.toFixed(4)}</b></span>`+
+      (c!=null?`<span class="pill">参考C <b>${c.toFixed(2)}</b></span>`:``)+
+      `<span class="badge ${pass?'ok':'ng'}">${pass?'OK':'要再測定'}</span>`;
+  });
+  updateSel();
+}
+function selectedSets(){ return sets.filter(s=>s.use); }
+function updateSel(){
+  const n=selectedSets().length, el=document.getElementById('selstat');
+  const over=n>MAXUSE;
+  el.className='selstat'+(over?' over':'');
+  el.innerHTML=`報告書に使う測定：<b>${n} / ${MAXUSE}</b>`+(over?'（3件までにしてください）':'');
+  document.getElementById('copyBtn').disabled=(n===0||over);
+}
+
+// JSON生成：選択された回を順に 1回目/2回目/3回目 へ
+function buildData(){
+  const g=id=>document.getElementById(id).value.trim();
+  const num=id=>{const v=parseFloat(document.getElementById(id).value);return isFinite(v)?v:null;};
+  const names=['1回目','2回目','3回目'];
+  const 測定値={};
+  selectedSets().slice(0,MAXUSE).forEach((s,k)=>{
+    const dP=[],Q=[];
+    for(let r=0;r<NPTS;r++){
+      const dp=parseFloat(s['dP'+r]), q=parseFloat(s['Q'+r]);
+      if(isFinite(dp)&&isFinite(q)){ dP.push(dp); Q.push(q); }
+    }
+    if(dP.length>0) 測定値[names[k]]={dP,Q};
+  });
+  return {
+    物件:{ 名称:g('bldg') },
+    環境:{ 試験日:g('date'), 時間:g('time'), 天候:g('wx'),
+      室内温度:num('tin'), 外気温度:num('tout'), 気圧:num('press'),
+      風速:num('wspd'), 風向:g('wdir'), 風速測定位置:g('wpos') },
+    測定値
+  };
+}
+function jsonText(){ return JSON.stringify(buildData(),null,2); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+  if(selectedSets().length===0){ toast('「報告書に使う」を1件以上選んでください'); return; }
+  const txt=jsonText();
+  try{ await navigator.clipboard.writeText(txt); toast('コピーしました。LINEに貼って送ってください'); }
+  catch(e){
+    const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); toast('コピーしました。LINEに貼って送ってください'); }
+    catch(_){ toast('コピーに失敗。保存ボタンをお使いください'); }
+    document.body.removeChild(ta);
+  }
+});
+document.getElementById('saveBtn').addEventListener('click',()=>{
+  if(selectedSets().length===0){ toast('「報告書に使う」を1件以上選んでください'); return; }
+  const bldg=document.getElementById('bldg').value.trim()||'物件';
+  const date=document.getElementById('date').value||'';
+  const blob=new Blob([jsonText()],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`気密データ_${date}_${bldg}.json`; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast('保存しました');
+});
+
+// 初期：3測定（すべて使うON）
+addSet(true); addSet(true); addSet(true);
+</script>
+</body>
+</html>

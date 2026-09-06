@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>報告書データ作成（事務所用）</title>
+<style>
+:root{--bg:#f3f5f8;--card:#fff;--ink:#1a2332;--muted:#5b6b80;--line:#dbe2ec;--blue:#2496ed;--green:#1a9d54;--red:#d64545;--radius:16px;--shadow:0 1px 3px rgba(20,40,70,.06)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Yu Gothic UI","Hiragino Kaku Gothic ProN","Segoe UI",Meiryo,system-ui,sans-serif;padding:0 0 50px}
+.wrap{max-width:720px;margin:0 auto;padding:18px 16px}
+header{display:flex;align-items:center;gap:12px;margin:6px 2px 16px}
+.logo{width:50px;height:50px;border-radius:13px;background:linear-gradient(135deg,#2496ed,#1a73c7);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px}
+h1{font-size:19px;margin:0}
+header .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 12px;padding-left:9px;border-left:4px solid var(--blue)}
+.step{display:inline-block;background:#2496ed;color:#fff;border-radius:7px;font-size:12px;padding:2px 8px;margin-right:6px}
+label.f{display:block;margin-bottom:11px}
+label.f .lab{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+label.f .lab small{color:#8a97a8;font-weight:400}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:15px;background:#fafcfe;color:var(--ink);font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:var(--blue);background:#fff}
+textarea{min-height:110px;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.unit{display:flex;align-items:center;gap:6px}.unit .u{font-size:12px;color:var(--muted);min-width:22px}
+.btn{padding:13px 16px;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,#2496ed,#1a73c7);color:#fff;width:100%;padding:15px}
+.btn.sub{background:#eef6ff;color:#1a6fb5;border:1px solid #cfe6fb}
+.preview{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:13px;margin-top:8px;display:none}
+.preview.show{display:block}
+.preview .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0}
+.pill{background:#fff;border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:12.5px}
+.badge{font-size:11.5px;font-weight:700;border-radius:8px;padding:3px 9px}
+.badge.ok{background:#e3f6e9;color:var(--green)}.badge.ng{background:#fdeaea;color:var(--red)}
+.msg{font-size:13px;padding:9px 12px;border-radius:10px;margin-top:8px;display:none}
+.msg.err{background:#fdeaea;color:#a12a2a;border:1px solid #f3bcbc;display:block}
+.msg.ok{background:#e3f6e9;color:#146c3a;border:1px solid #b8e6c8;display:block}
+.hint{background:#f1f8ff;border:1px solid #cfe6fb;color:#1a4a7a;border-radius:11px;padding:11px 13px;font-size:12.5px;line-height:1.6;margin-top:6px}
+.profbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.profbar select{flex:1;min-width:150px}
+.profbar .btn{padding:9px 12px;font-size:13px}
+.phblock{margin-bottom:15px}
+.phhead{font-size:13px;font-weight:700;margin-bottom:6px}
+.phhead small{color:var(--muted);font-weight:400;margin-left:6px}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.thumb{position:relative}
+.thumb img{width:84px;height:62px;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
+.thumb button{position:absolute;top:-7px;right:-7px;width:21px;height:21px;border-radius:50%;border:2px solid #fff;background:#d64545;color:#fff;font-size:12px;line-height:1;cursor:pointer;padding:0}
+input[type="file"]{padding:8px;font-size:13px;background:#fff}
+.foot{text-align:center;font-size:11px;color:#8a97a8;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="logo">報</div>
+<div><h1>報告書データ作成（事務所用）</h1><div class="sub">現場データを貼り付け → 設計情報を追記 → データを作成 → .batにドロップ</div></div>
+</header>
+
+<div class="card">
+<h2><span class="step">①</span>現場データを貼り付け</h2>
+<label class="f"><span class="lab">LINEで受け取ったデータ（{ } のかたまり）をここに貼り付け</span>
+<textarea id="paste" placeholder='ここに貼り付け…（例）{ "物件": { "名称": "…" }, "環境": {…}, "測定値": {…} }'></textarea></label>
+<button class="btn sub" id="loadBtn">読み込む</button>
+<div class="msg" id="loadMsg"></div>
+<div class="preview" id="prev"></div>
+</div>
+
+<div class="card">
+<h2><span class="step">②</span>物件情報</h2>
+<div class="hint" style="margin:0 0 12px">物件を一度「保存」すれば、次回から現場データ読込だけで面積などが自動で入ります（中間→完成の使い回しに便利）。</div>
+<div class="profbar">
+  <select id="profSel"><option value="">（保存した物件を選ぶ／新規）</option></select>
+  <button type="button" class="btn sub" id="profSave">この物件を保存</button>
+  <button type="button" class="btn sub" id="profDel">削除</button>
+</div>
+<div class="msg" id="profMsg"></div>
+<label class="f"><span class="lab">物件名</span><input id="bldg" type="text" placeholder="現場データから自動で入ります"></label>
+<div class="grid">
+<label class="f"><span class="lab">所在地</span><input id="addr" type="text" placeholder="例：〇〇県〇〇市…"></label>
+<label class="f"><span class="lab">竣工年月日</span><input id="done" type="date"></label>
+</div>
+<label class="f" style="margin-bottom:0"><span class="lab">構造・工法 <small>(保存されます)</small></span><input id="struct" type="text" placeholder="木造軸組工法"></label>
+</div>
+
+<div class="card">
+<h2><span class="step">③</span>面積内訳（設計図から）</h2>
+<div class="hint" style="margin:0 0 12px">未入力は 0 として計算します。延べ床＝地階＋1〜3階、実質延床は自動計算されます。</div>
+<div class="grid">
+<label class="f"><span class="lab">地階 床面積</span><div class="unit"><input id="a_b" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">1階 床面積</span><div class="unit"><input id="a_1" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">2階 床面積</span><div class="unit"><input id="a_2" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">3階 床面積</span><div class="unit"><input id="a_3" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">除外する床面積(B)</span><div class="unit"><input id="a_ex" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">天井ふところ相当</span><div class="unit"><input id="a_ce" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">吹抜け相当</span><div class="unit"><input id="a_fu" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">不規則吹抜け相当</span><div class="unit"><input id="a_ir" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">小屋裏 相当</span><div class="unit"><input id="a_ko" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">基礎内 相当</span><div class="unit"><input id="a_ki" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">その他 相当</span><div class="unit"><input id="a_ot" type="number" step="0.01" placeholder="0"><span class="u">m²</span></div></label>
+<label class="f"><span class="lab">気積 Vt <small>(ACH用/任意)</small></span><div class="unit"><input id="a_vt" type="number" step="0.1" placeholder="例：327"><span class="u">m³</span></div></label>
+</div>
+</div>
+
+<div class="card">
+<h2><span class="step">④</span>測定者 <small style="font-weight:400;color:var(--muted)">(保存されます)</small></h2>
+<label class="f" style="margin-bottom:0"><span class="lab">測定者 氏名</span><input id="tester" type="text" placeholder="例：山田太郎"></label>
+</div>
+
+<div class="card">
+<h2><span class="step">⑤</span>写真（LINEで届いた写真を割り当て・任意）</h2>
+<div class="hint" style="margin:0 0 12px">枠に合わせて自動で貼ります。順番に並びます。選び直しは × で削除。写真が無い項目は空のままでOK。</div>
+<div class="phblock">
+  <div class="phhead">測定位置（間取り図）<small>最大3枚</small></div>
+  <input type="file" accept="image/*" multiple data-add="測定位置">
+  <div class="thumbs" data-thumbs="測定位置"></div>
+</div>
+<div class="phblock">
+  <div class="phhead">中間写真（施工状況）<small>最大5枚</small></div>
+  <input type="file" accept="image/*" multiple data-add="中間">
+  <div class="thumbs" data-thumbs="中間"></div>
+</div>
+<div class="phblock">
+  <div class="phhead">完成写真<small>最大5枚</small></div>
+  <input type="file" accept="image/*" multiple data-add="完成">
+  <div class="thumbs" data-thumbs="完成"></div>
+</div>
+<div class="phblock" style="margin-bottom:0">
+  <div class="phhead">測定器のプリントアウト<small>1枚</small></div>
+  <input type="file" accept="image/*" data-add="プリントアウト">
+  <div class="thumbs" data-thumbs="プリントアウト"></div>
+</div>
+</div>
+
+<button class="btn primary" id="makeBtn">📄 報告書データ(.json)を作成</button>
+<div class="msg" id="makeMsg"></div>
+<div class="hint" style="margin-top:12px"><b>次の手順</b>：作成された <b>報告書データ_◯◯.json</b> を「<b>報告書を作る.bat</b>」にドラッグ＆ドロップ → 出力フォルダに報告書が出来ます。あとは写真を貼り、内容を確認するだけ。</div>
+
+<div class="foot">気密報告書ツール ／ このページはネットに送信しません（すべて手元で処理）</div>
+</div>
+
+<script>
+let parsed=null;
+
+// 保存された固定値を復元
+try{
+  const s=JSON.parse(localStorage.getItem('kimitsu_office')||'{}');
+  if(s.struct) document.getElementById('struct').value=s.struct;
+  if(s.tester) document.getElementById('tester').value=s.tester;
+}catch(e){}
+if(!document.getElementById('struct').value) document.getElementById('struct').value='木造軸組工法';
+
+function fit(dP,Q){
+  const pts=[];
+  for(let i=0;i<dP.length;i++){ const d=+dP[i],q=+Q[i]; if(isFinite(d)&&d>0&&isFinite(q)&&q>0) pts.push([Math.log(d/9.8),Math.log(q)]); }
+  if(pts.length<3) return null;
+  const N=pts.length; let sx=0,sy=0; pts.forEach(p=>{sx+=p[0];sy+=p[1];});
+  const mx=sx/N,my=sy/N; let sxx=0,sxy=0,syy=0;
+  pts.forEach(p=>{const dx=p[0]-mx,dy=p[1]-my;sxx+=dx*dx;sxy+=dx*dy;syy+=dy*dy;});
+  const slope=sxy/sxx,r2=(sxy*sxy)/(sxx*syy);
+  return {n:1/slope,r2,count:N};
+}
+function msg(id,type,text){ const el=document.getElementById(id); el.className='msg '+type; el.textContent=text; }
+
+document.getElementById('loadBtn').addEventListener('click',()=>{
+  const raw=document.getElementById('paste').value.trim();
+  if(!raw){ msg('loadMsg','err','データを貼り付けてから押してください。'); return; }
+  let obj;
+  try{ obj=JSON.parse(raw); }catch(e){ msg('loadMsg','err','データの形式が正しくありません。{ から } まで全部貼り付けてください。'); return; }
+  if(!obj || !obj.測定値 || Object.keys(obj.測定値).length===0){ msg('loadMsg','err','測定値が見つかりません。現場アプリの「データをコピー」で得たものを貼り付けてください。'); return; }
+  parsed=obj;
+  // 物件名など反映（保存プロファイルがあれば設計情報を自動で入れる）
+  if(obj.物件 && obj.物件.名称){
+    document.getElementById('bldg').value=obj.物件.名称;
+    if(loadProfiles()[obj.物件.名称]){ applyProfile(obj.物件.名称); refreshProfSel(obj.物件.名称); }
+  }
+  // プレビュー
+  const p=document.getElementById('prev'); let html='';
+  const names=Object.keys(obj.測定値);
+  html+=`<div style="font-weight:700;margin-bottom:4px">物件：${(obj.物件&&obj.物件.名称)||'(未設定)'} ／ 試験日：${(obj.環境&&obj.環境.試験日)||'-'} ／ 外気温：${(obj.環境&&obj.環境.外気温度!=null)?obj.環境.外気温度+'℃':'-'}</div>`;
+  names.forEach((nm,i)=>{
+    const s=obj.測定値[nm]; const f=fit(s.dP||[],s.Q||[]);
+    if(f){ const ok=(f.n>=1&&f.n<=2&&f.r2>=0.98);
+      html+=`<div class="row"><b>${i+1}回目</b><span class="pill">${(s.dP||[]).length}点</span><span class="pill">n ${f.n.toFixed(2)}</span><span class="pill">R² ${f.r2.toFixed(4)}</span><span class="badge ${ok?'ok':'ng'}">${ok?'OK':'要確認'}</span></div>`;
+    } else {
+      html+=`<div class="row"><b>${i+1}回目</b><span class="pill">${(s.dP||[]).length}点（3点未満）</span></div>`;
+    }
+  });
+  p.innerHTML=html; p.classList.add('show');
+  msg('loadMsg','ok','読み込みました。②〜④を入力して「報告書データを作成」を押してください。');
+});
+
+function numOr0(id){ const v=parseFloat(document.getElementById(id).value); return isFinite(v)?v:0; }
+function numOrNull(id){ const v=parseFloat(document.getElementById(id).value); return isFinite(v)?v:null; }
+function strv(id){ return document.getElementById(id).value.trim(); }
+
+// ===== 写真 =====
+const PH={測定位置:[],中間:[],完成:[],プリントアウト:[]};
+const PHMAX={測定位置:3,中間:5,完成:5,プリントアウト:1};
+function downscale(file,max=1600,q=0.82){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>{ let w=img.naturalWidth,h=img.naturalHeight; const s=Math.min(1,max/Math.max(w,h));
+      w=Math.round(w*s); h=Math.round(h*s);
+      const c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(img.src);
+      res(c.toDataURL('image/jpeg',q));
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(img.src); rej(new Error('画像を読めません')); };
+    img.src=URL.createObjectURL(file);
+  });
+}
+function renderThumbs(cat){
+  const box=document.querySelector(`[data-thumbs="${cat}"]`); if(!box) return;
+  box.innerHTML=PH[cat].map((u,i)=>`<span class="thumb"><img src="${u}"><button type="button" data-del="${cat}" data-idx="${i}">×</button></span>`).join('');
+}
+document.querySelectorAll('input[data-add]').forEach(inp=>{
+  inp.addEventListener('change',async()=>{
+    const cat=inp.dataset.add;
+    for(const f of Array.from(inp.files)){
+      if(PH[cat].length>=PHMAX[cat]) break;
+      try{ PH[cat].push(await downscale(f)); }catch(e){}
+    }
+    inp.value=''; renderThumbs(cat);
+  });
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button[data-del]'); if(!b) return;
+  const c=b.dataset.del, i=+b.dataset.idx; PH[c].splice(i,1); renderThumbs(c);
+});
+
+// ===== 物件プロファイル =====
+const PROF_KEY='kimitsu_profiles';
+const AREA_MAP={a_b:'地階',a_1:'1階',a_2:'2階',a_3:'3階',a_ex:'除外',a_ce:'天井ふところ',a_fu:'吹抜け',a_ir:'不規則吹抜け',a_ko:'小屋裏',a_ki:'基礎内',a_ot:'その他',a_vt:'気積Vt'};
+function loadProfiles(){ try{ return JSON.parse(localStorage.getItem(PROF_KEY)||'{}'); }catch(e){ return {}; } }
+function saveProfiles(p){ try{ localStorage.setItem(PROF_KEY,JSON.stringify(p)); }catch(e){} }
+function refreshProfSel(sel){
+  const p=loadProfiles(); const el=document.getElementById('profSel'); const cur=(sel!=null)?sel:el.value;
+  el.innerHTML='<option value="">（保存した物件を選ぶ／新規）</option>'+Object.keys(p).map(k=>`<option value="${k}">${k}</option>`).join('');
+  if(cur&&p[cur]) el.value=cur;
+}
+function applyProfile(name){
+  const d=loadProfiles()[name]; if(!d) return;
+  document.getElementById('bldg').value=name;
+  document.getElementById('addr').value=d.所在地||'';
+  document.getElementById('done').value=d.竣工年月日||'';
+  if(d.構造工法) document.getElementById('struct').value=d.構造工法;
+  const A=d.面積||{};
+  Object.keys(AREA_MAP).forEach(id=>{ const v=A[AREA_MAP[id]]; document.getElementById(id).value=(v!=null?v:''); });
+}
+document.getElementById('profSel').addEventListener('change',e=>{ if(e.target.value){ applyProfile(e.target.value); msg('profMsg','ok',`物件「${e.target.value}」を読み込みました。`);} });
+document.getElementById('profSave').addEventListener('click',()=>{
+  const name=strv('bldg'); if(!name){ msg('profMsg','err','先に物件名を入れてください。'); return; }
+  const p=loadProfiles();
+  const 面積={}; Object.keys(AREA_MAP).forEach(id=>{ 面積[AREA_MAP[id]]=(id==='a_vt')?numOrNull(id):numOr0(id); });
+  p[name]={ 所在地:strv('addr'), 竣工年月日:strv('done'), 構造工法:strv('struct'), 面積 };
+  saveProfiles(p); refreshProfSel(name);
+  msg('profMsg','ok',`物件「${name}」を保存しました。次回は現場データを読み込むだけで自動で入ります。`);
+});
+document.getElementById('profDel').addEventListener('click',()=>{
+  const name=document.getElementById('profSel').value; if(!name){ msg('profMsg','err','削除する物件を選んでください。'); return; }
+  const p=loadProfiles(); delete p[name]; saveProfiles(p); refreshProfSel('');
+  msg('profMsg','ok',`「${name}」を削除しました。`);
+});
+refreshProfSel();
+
+document.getElementById('makeBtn').addEventListener('click',()=>{
+  if(!parsed){ msg('makeMsg','err','先に①で現場データを読み込んでください。'); return; }
+  const bldg=strv('bldg'); if(!bldg){ msg('makeMsg','err','物件名を入れてください。'); return; }
+  // 固定値を保存
+  try{ localStorage.setItem('kimitsu_office',JSON.stringify({struct:strv('struct'),tester:strv('tester')})); }catch(e){}
+  const data={
+    物件:{ 名称:bldg, 所在地:strv('addr'), 竣工年月日:strv('done'), 構造工法:strv('struct') },
+    面積:{ 地階:numOr0('a_b'),'1階':numOr0('a_1'),'2階':numOr0('a_2'),'3階':numOr0('a_3'),
+      除外:numOr0('a_ex'),天井ふところ:numOr0('a_ce'),吹抜け:numOr0('a_fu'),不規則吹抜け:numOr0('a_ir'),
+      小屋裏:numOr0('a_ko'),基礎内:numOr0('a_ki'),その他:numOr0('a_ot'),気積Vt:numOrNull('a_vt') },
+    環境: parsed.環境||{},
+    測定者:{ 氏名:strv('tester') },
+    測定値: parsed.測定値||{}
+  };
+  const 写真={}; ['測定位置','中間','完成','プリントアウト'].forEach(c=>{ if(PH[c]&&PH[c].length) 写真[c]=PH[c]; });
+  if(Object.keys(写真).length) data.写真=写真;
+  const ymd=((data.環境.試験日||'').replace(/[^0-9]/g,''))||new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const fname=`報告書データ_${ymd}_${bldg}.json`;
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  msg('makeMsg','ok',`「${fname}」を作成しました。これを『報告書を作る.bat』にドラッグ＆ドロップしてください。`);
+});
+</script>
+</body>
+</html>
