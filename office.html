@@ -2,14 +2,16 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>報告書データ作成（事務所用）</title>
 <style>
 :root{--bg:#f3f5f8;--card:#fff;--ink:#1a2332;--muted:#5b6b80;--line:#dbe2ec;--blue:#2496ed;--green:#1a9d54;--red:#d64545;--radius:16px;--shadow:0 1px 3px rgba(20,40,70,.06)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Yu Gothic UI","Hiragino Kaku Gothic ProN","Segoe UI",Meiryo,system-ui,sans-serif;padding:0 0 50px}
-.wrap{max-width:720px;margin:0 auto;padding:18px 16px}
-header{display:flex;align-items:center;gap:12px;margin:6px 2px 16px}
+.wrap{max-width:720px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+.homelink{display:inline-flex;align-items:center;gap:5px;color:var(--blue);font-size:13px;font-weight:600;text-decoration:none;margin-bottom:10px;padding:6px 10px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.homelink:active{background:#f1f8ff}
+header{display:flex;align-items:center;gap:12px;margin:2px 2px 16px}
 .logo{width:50px;height:50px;border-radius:13px;background:linear-gradient(135deg,#2496ed,#1a73c7);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px}
 h1{font-size:19px;margin:0}
 header .sub{font-size:12px;color:var(--muted);margin-top:2px}
@@ -54,6 +56,7 @@ input[type="file"]{padding:8px;font-size:13px;background:#fff}
 </head>
 <body>
 <div class="wrap">
+<a href="index.html" class="homelink">← 一覧へ戻る</a>
 <header>
 <div class="logo">報</div>
 <div><h1>報告書データ作成（事務所用）</h1><div class="sub">現場データを貼り付け → 設計情報を追記 → データを作成 → .batにドロップ</div></div>
