@@ -137,9 +137,10 @@ input[type="file"]{padding:8px;font-size:13px;background:#fff}
 </div>
 </div>
 
-<button class="btn primary" id="makeBtn">📄 報告書データ(.json)を作成</button>
+<button class="btn primary" id="pdfBtn" style="background:linear-gradient(135deg,#1a9d54,#12833f)">🖨 ブラウザでPDFにする（Excel不要・おすすめ）</button>
+<button class="btn primary" id="makeBtn" style="margin-top:10px;background:#5b6b80">📄 Excel完全一致版用データを作成（.bat用）</button>
 <div class="msg" id="makeMsg"></div>
-<div class="hint" style="margin-top:12px"><b>次の手順</b>：作成された <b>報告書データ_◯◯.json</b> を「<b>報告書を作る.bat</b>」にドラッグ＆ドロップ → 出力フォルダに報告書が出来ます。あとは写真を貼り、内容を確認するだけ。</div>
+<div class="hint" style="margin-top:12px"><b>2つの出力</b>：<br>①「ブラウザでPDF」＝この場でPDF（Excel不要・スマホ可）。プレビューが開くので右上「PDFにする」で保存。<br>② Excel完全一致版が必要な時だけ、作成した <b>報告書データ_◯◯.json</b> を「<b>報告書を作る.bat</b>」にドロップ。</div>
 
 <div class="foot">気密報告書ツール ／ このページはネットに送信しません（すべて手元で処理）</div>
 </div>
@@ -270,10 +271,9 @@ document.getElementById('profDel').addEventListener('click',()=>{
 });
 refreshProfSel();
 
-document.getElementById('makeBtn').addEventListener('click',()=>{
-  if(!parsed){ msg('makeMsg','err','先に①で現場データを読み込んでください。'); return; }
-  const bldg=strv('bldg'); if(!bldg){ msg('makeMsg','err','物件名を入れてください。'); return; }
-  // 固定値を保存
+function buildReportData(){
+  if(!parsed){ msg('makeMsg','err','先に①で現場データを読み込んでください。'); return null; }
+  const bldg=strv('bldg'); if(!bldg){ msg('makeMsg','err','物件名を入れてください。'); return null; }
   try{ localStorage.setItem('kimitsu_office',JSON.stringify({struct:strv('struct'),tester:strv('tester')})); }catch(e){}
   const data={
     物件:{ 名称:bldg, 所在地:strv('addr'), 竣工年月日:strv('done'), 構造工法:strv('struct') },
@@ -286,6 +286,19 @@ document.getElementById('makeBtn').addEventListener('click',()=>{
   };
   const 写真={}; ['測定位置','中間','完成','プリントアウト'].forEach(c=>{ if(PH[c]&&PH[c].length) 写真[c]=PH[c]; });
   if(Object.keys(写真).length) data.写真=写真;
+  return {data, bldg};
+}
+document.getElementById('pdfBtn').addEventListener('click',()=>{
+  const r=buildReportData(); if(!r) return;
+  window.__kimitsuReportData=r.data;
+  try{ sessionStorage.setItem('kimitsu_report_data', JSON.stringify(r.data)); }catch(e){}
+  const w=window.open('report_print.html','_blank');
+  if(!w){ msg('makeMsg','err','ポップアップがブロックされました。ブラウザで許可してください。'); return; }
+  msg('makeMsg','ok','報告書プレビューを開きました。右上の「PDFにする」で保存できます。');
+});
+document.getElementById('makeBtn').addEventListener('click',()=>{
+  const r=buildReportData(); if(!r) return;
+  const {data,bldg}=r;
   const ymd=((data.環境.試験日||'').replace(/[^0-9]/g,''))||new Date().toISOString().slice(0,10).replace(/-/g,'');
   const fname=`報告書データ_${ymd}_${bldg}.json`;
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});

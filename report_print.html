@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>気密測定 報告書（PDF）</title>
+<style>
+:root{--ink:#1a2332;--muted:#5b6b80;--line:#c9d3df;--head:#eef3f9;--blue:#1a6fb5;--accent:#2496ed;--ok:#1a9d54;--red:#d64545}
+*{box-sizing:border-box}
+html,body{margin:0;background:#e9edf2;color:var(--ink);font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo",sans-serif}
+.page{width:210mm;min-height:297mm;margin:12px auto;background:#fff;padding:14mm 13mm;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+.rhead{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2.5px solid var(--ink);padding-bottom:8px;margin-bottom:14px}
+.rhead h1{font-size:19px;margin:0;letter-spacing:.02em}
+.rhead .no{font-size:12px;color:var(--muted)}
+.sec{font-size:12.5px;font-weight:700;color:#fff;background:var(--blue);padding:5px 10px;border-radius:5px;margin:16px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+.info td{border:1px solid var(--line);padding:5px 8px}
+.info td.k{background:var(--head);color:var(--muted);white-space:nowrap;width:92px;font-size:11px}
+.meas th,.meas td{border:1px solid var(--line);padding:5px 6px;text-align:center}
+.meas th{background:var(--head);font-size:11px;color:var(--muted);font-weight:600}
+.meas td.dp{color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:6px}
+.results td{border:1px solid var(--line);padding:6px 9px;font-size:12px}
+.results td.k{background:var(--head);color:var(--muted);font-size:11px}
+.results td.v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.results td.u{color:var(--muted);font-size:10.5px;width:52px}
+.cbox{margin-top:10px;border:2px solid var(--accent);border-radius:12px;padding:12px 14px;display:flex;align-items:baseline;justify-content:space-between;background:linear-gradient(180deg,#f5faff,#fff)}
+.cbox .lab{font-size:12px;color:var(--muted)}
+.cbox .val{font-size:40px;font-weight:800;color:var(--blue);line-height:1;font-variant-numeric:tabular-nums}
+.cbox .val small{font-size:14px;font-weight:600;color:var(--muted);margin-left:4px}
+.badge{display:inline-block;font-size:11px;font-weight:700;border-radius:8px;padding:3px 10px;background:#e3f6e9;color:var(--ok);margin-left:8px}
+.badge.ng{background:#fdeaea;color:var(--red)}
+.graph{border:1px solid var(--line);border-radius:10px;padding:10px 12px 6px}
+.graph .gt{font-size:11px;color:var(--muted);margin-bottom:4px;text-align:center}
+.arows td{border:1px solid var(--line);padding:5px 8px;font-size:12px}
+.arows td.k{background:var(--head);color:var(--muted);font-size:11px;width:210px}
+.arows td.v{text-align:right;font-variant-numeric:tabular-nums}
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.photos .ph{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#f7f9fc}
+.photos .ph img{width:100%;height:150px;object-fit:contain;display:block;background:#fff}
+.photos .ph .cap{font-size:10.5px;color:var(--muted);padding:4px 8px;border-top:1px solid var(--line)}
+.ph.wide{grid-column:1/3}
+.ph.wide img{height:230px}
+.note{font-size:10px;color:#8a97a8;margin-top:14px;line-height:1.6}
+.toolbar{position:sticky;top:0;background:#1a2332;color:#fff;padding:10px 14px;display:flex;gap:10px;align-items:center;z-index:5;flex-wrap:wrap}
+.toolbar button{font-family:inherit;font-size:14px;font-weight:700;border:none;border-radius:9px;padding:9px 16px;background:var(--accent);color:#fff;cursor:pointer}
+.toolbar a{color:#9fd0f5;font-size:13px;text-decoration:none}
+.toolbar span{font-size:12px;color:#c9d3df}
+@page{ size:A4; margin:10mm }
+@media print{
+  html,body{background:#fff}
+  .page{margin:0;box-shadow:none;width:auto;min-height:0;padding:0}
+  .page + .page{page-break-before:always}
+  .noprint{display:none!important}
+  .sec{margin:11px 0 6px}
+}
+</style>
+</head>
+<body>
+<div class="toolbar noprint">
+  <button onclick="window.print()">🖨 PDFにする（印刷 → PDFで保存）</button>
+  <a href="office.html">← 入力に戻る</a>
+  <span id="tbnote"></span>
+</div>
+
+<!-- ページ1：測定結果 -->
+<div class="page">
+  <div class="rhead"><h1 id="ttl">住宅の気密性能試験結果</h1><div class="no">測定結果・グラフ</div></div>
+  <div class="sec">測定者・測定方法・測定装置</div>
+  <table class="info"><tbody>
+    <tr><td class="k">事業所</td><td id="i_office"></td><td class="k">登録番号</td><td id="i_officeno"></td></tr>
+    <tr><td class="k">測定者</td><td id="i_tester"></td><td class="k">登録番号</td><td id="i_testerno"></td></tr>
+    <tr><td class="k">測定装置</td><td colspan="3" id="i_device"></td></tr>
+    <tr><td class="k">測定方法</td><td colspan="3" id="i_method"></td></tr>
+  </tbody></table>
+  <div class="sec">試験日時・測定時の環境</div>
+  <table class="info"><tbody>
+    <tr><td class="k">試験日時</td><td id="e_date"></td><td class="k">天候</td><td id="e_wx"></td><td class="k">気圧</td><td id="e_press"></td></tr>
+    <tr><td class="k">室内温度</td><td id="e_tin"></td><td class="k">外気温度</td><td id="e_tout"></td><td class="k">風速/風向</td><td id="e_wind"></td></tr>
+  </tbody></table>
+  <div class="sec">測定値（各圧力差 ΔP における通気量 Q）<span style="font-weight:400;font-size:10.5px;opacity:.85">　※全測定点</span></div>
+  <table class="meas"><thead><tr><th>測定点</th><th>差圧 ΔP (Pa)</th><th>風量 Q (m³/h)</th></tr></thead><tbody id="measBody"></tbody></table>
+  <div class="grid2">
+    <div class="results">
+      <div class="sec" style="margin-top:0">計算結果</div>
+      <table><tbody>
+        <tr><td class="k">隙間特性値 n</td><td class="v" id="r_n"></td><td class="u">(1〜2)</td></tr>
+        <tr><td class="k">決定係数 R²</td><td class="v" id="r_r2"></td><td class="u">(≧0.98)</td></tr>
+        <tr><td class="k">通気率 α</td><td class="v" id="r_a"></td><td class="u">m³/h·Pa</td></tr>
+        <tr><td class="k">Q9.8（9.8Pa通気量）</td><td class="v" id="r_q98"></td><td class="u">m³/h</td></tr>
+        <tr><td class="k">係数 b（空気密度）</td><td class="v" id="r_b"></td><td class="u">-</td></tr>
+        <tr><td class="k">総相当隙間面積 αA</td><td class="v" id="r_aa"></td><td class="u">cm²</td></tr>
+        <tr><td class="k">実質延べ床面積 S</td><td class="v" id="r_s"></td><td class="u">m²</td></tr>
+        <tr><td class="k">50Pa時の通気量</td><td class="v" id="r_q50"></td><td class="u">m³/h</td></tr>
+        <tr><td class="k">漏気回数 ACH50 / 9.8</td><td class="v" id="r_ach"></td><td class="u">回/h</td></tr>
+      </tbody></table>
+      <div class="cbox"><div><div class="lab">相当隙間面積 C（＝αA/S）</div><span class="badge" id="r_judge">判定 OK</span></div><div class="val" id="r_c"></div></div>
+    </div>
+    <div class="graph"><div class="gt">両対数グラフ（差圧 ΔP × 通気量 Q）</div><svg id="chart" viewBox="0 0 320 300" width="100%"></svg></div>
+  </div>
+</div>
+
+<!-- ページ2：物件・実質延床面積 -->
+<div class="page">
+  <div class="rhead"><h1>測定対象建物の概要</h1><div class="no">物件・面積</div></div>
+  <div class="sec">物件情報</div>
+  <table class="info"><tbody>
+    <tr><td class="k">建物名称</td><td id="b_name"></td><td class="k">竣工年月日</td><td id="b_done"></td></tr>
+    <tr><td class="k">所在地</td><td id="b_addr"></td><td class="k">構造・工法</td><td id="b_struct"></td></tr>
+  </tbody></table>
+  <div class="sec">実質延べ床面積の算出</div>
+  <table class="arows"><tbody id="areaBody"></tbody></table>
+  <div class="note">実質延べ床面積 S ＝ max( (A)−(B)+(C), 気積Vt÷2.6 )。C値の分母に用います。</div>
+</div>
+
+<!-- ページ3：写真 -->
+<div class="page" id="photoPage">
+  <div class="rhead"><h1>測定物件の写真・図面</h1><div class="no">添付資料</div></div>
+  <div id="photoWrap"></div>
+</div>
+
+<script>
+// ===== サンプル（sessionStorageに入力データが無い場合の表示用） =====
+const SAMPLE = {
+  物件:{名称:"〇〇様邸", 所在地:"", 竣工年月日:"", 構造工法:"木造軸組工法"},
+  面積:{地階:0,"1階":67.08,"2階":37.27,"3階":0,除外:0,天井ふところ:0,吹抜け:0,不規則吹抜け:0,小屋裏:6.78,基礎内:14.84,その他:0,気積Vt:327},
+  環境:{試験日:"2026-09-04",時間:"9:30〜10:30",天候:"晴れ",室内温度:24.4,外気温度:24.4,気圧:1019.3,風速:2,風向:"北西",風速測定位置:"予報データ"},
+  測定者:{氏名:"青木数行"},
+  測定値:{"1回目":{dP:[19.7,26.9,34.9,41.5,50.3],Q:[63,74,90,98,109]}},
+  写真:{}
+};
+let D=null;
+try{ if(window.opener && window.opener.__kimitsuReportData) D=window.opener.__kimitsuReportData; }catch(e){}
+if(!D){ try{ D=JSON.parse(sessionStorage.getItem('kimitsu_report_data')); }catch(e){} }
+const isSample=!D; if(!D) D=SAMPLE;
+// 固定情報（会社・装置・方法。必要ならD.固定で上書き）
+const FIX=Object.assign({事業所:"イビケン株式会社",事業所登録:"0835",測定者登録:"05932-26",装置:"住宅気密測定装置 コーナー札幌株式会社製 型式KNS-5000C",方法:"JIS A 2201（送風機による住宅等の気密性能試験方法）／減圧法"}, D.固定||{});
+const nz=v=>{const n=parseFloat(v);return isFinite(n)?n:0;};
+
+// 全測定点をまとめる
+let dP=[],Q=[];
+Object.values(D.測定値||{}).forEach(s=>{ (s.dP||[]).forEach((d,i)=>{ const q=(s.Q||[])[i]; if(d>0&&q>0){dP.push(+d);Q.push(+q);} }); });
+if(dP.length<3){ dP=SAMPLE.測定値['1回目'].dP.slice(); Q=SAMPLE.測定値['1回目'].Q.slice(); }
+
+function fit(dP,Q){
+  const pts=[]; for(let i=0;i<dP.length;i++){const d=+dP[i],q=+Q[i]; if(d>0&&q>0) pts.push([Math.log(d/9.8),Math.log(q)]);}
+  const N=pts.length; let sx=0,sy=0; pts.forEach(p=>{sx+=p[0];sy+=p[1];}); const mx=sx/N,my=sy/N;
+  let sxx=0,sxy=0,syy=0; pts.forEach(p=>{const dx=p[0]-mx,dy=p[1]-my;sxx+=dx*dx;sxy+=dx*dy;syy+=dy*dy;});
+  const slope=sxy/sxx, inter=my-slope*mx, r2=(sxy*sxy)/(sxx*syy);
+  return {n:1/slope, r2, Q98:Math.exp(inter)};
+}
+const f=fit(dP,Q);
+const a=D.面積||{};
+const A=nz(a.地階)+nz(a['1階'])+nz(a['2階'])+nz(a['3階']);
+const B=nz(a.除外);
+const Cc=nz(a.天井ふところ)+nz(a.吹抜け)+nz(a.不規則吹抜け)+nz(a.小屋裏)+nz(a.基礎内)+nz(a.その他);
+const S1=A-B+Cc; const Vt=nz(a.気積Vt); const S2=Vt>0?Vt/2.6:0; const S=Math.max(S1,S2)||S1||1;
+const tout=nz(D.環境&&D.環境.外気温度)||20;
+const rho=353/(273+tout), b=(1/0.36)*Math.sqrt(rho/2)*Math.sqrt(1/9.8);
+let aA=f.Q98*b; const dd=2-Math.floor(Math.log10(Math.abs(aA))); aA=Math.round(aA*Math.pow(10,dd))/Math.pow(10,dd);
+const C=aA/S, alpha=f.Q98/Math.pow(9.8,1/f.n), Q50=f.Q98*Math.pow(50/9.8,1/f.n);
+const ACH50=Vt>0?Q50/Vt:null, ACH98=Vt>0?f.Q98/Vt:null;
+const pass=(f.n>=1&&f.n<=2&&f.r2>=0.98);
+
+const $=id=>document.getElementById(id);
+const env=D.環境||{}, m=D.測定者||{}, bldg=D.物件||{};
+$('ttl').textContent="住宅の気密性能試験結果"+(bldg.名称?"　"+bldg.名称:"");
+$('i_office').textContent=FIX.事業所; $('i_officeno').textContent=FIX.事業所登録;
+$('i_tester').textContent=m.氏名||"—"; $('i_testerno').textContent=FIX.測定者登録;
+$('i_device').textContent=FIX.装置; $('i_method').textContent=FIX.方法;
+$('e_date').textContent=((env.試験日||"").replace(/-/g,'/'))+(env.時間?"  "+env.時間:"");
+$('e_wx').textContent=env.天候||"—"; $('e_press').textContent=(env.気圧!=null&&env.気圧!==""?env.気圧+" hPa":"—");
+$('e_tin').textContent=(env.室内温度!=null&&env.室内温度!==""?env.室内温度+" ℃":"—");
+$('e_tout').textContent=(env.外気温度!=null&&env.外気温度!==""?env.外気温度+" ℃":"—");
+$('e_wind').textContent=((env.風速!=null&&env.風速!==""?env.風速+" m/s":"")+(env.風向?" ／ "+env.風向:""))||"—";
+$('measBody').innerHTML=dP.map((d,i)=>`<tr><td>${i+1}</td><td class="dp">${(+d).toFixed(1)}</td><td>${Q[i]}</td></tr>`).join('');
+$('r_n').textContent=f.n.toFixed(2); $('r_r2').textContent=f.r2.toFixed(4);
+$('r_a').textContent=alpha.toFixed(1); $('r_q98').textContent=f.Q98.toFixed(1);
+$('r_b').textContent=b.toFixed(3); $('r_aa').textContent=aA.toFixed(1); $('r_s').textContent=S.toFixed(2);
+$('r_q50').textContent=Q50.toFixed(0); $('r_ach').textContent=(ACH50!=null?ACH50.toFixed(2):"—")+" / "+(ACH98!=null?ACH98.toFixed(2):"—");
+$('r_c').innerHTML=C.toFixed(2)+'<small>cm²/m²</small>';
+const jb=$('r_judge'); jb.textContent=pass?'判定 OK':'要再測定'; if(!pass) jb.classList.add('ng');
+
+// ページ2 物件・面積
+$('b_name').textContent=bldg.名称||"—"; $('b_done').textContent=(bldg.竣工年月日||"").replace(/-/g,'/')||"—";
+$('b_addr').textContent=bldg.所在地||"—"; $('b_struct').textContent=bldg.構造工法||"—";
+const arows=[
+  ["建築基準法上の床面積 (A)＝地階＋1〜3階", A],
+  ["　地階 / 1階 / 2階 / 3階", [a.地階,a['1階'],a['2階'],a['3階']].map(x=>nz(x)).join(" / ")],
+  ["除外する床面積 (B)", B],
+  ["加算する床面積 (C)＝天井ふところ＋吹抜け＋小屋裏＋基礎内 等", Cc],
+  ["　うち 小屋裏 / 基礎内", nz(a.小屋裏)+" / "+nz(a.基礎内)],
+  ["実質延べ床面積 S1 ＝ (A)−(B)+(C)", S1.toFixed(2)],
+  ["気積 Vt", Vt||"—"],
+  ["気積から S2 ＝ Vt÷2.6", Vt>0?S2.toFixed(2):"—"],
+  ["<b>計算に用いる実質延べ床面積 S ＝ max(S1, S2)</b>", "<b>"+S.toFixed(2)+" m²</b>"]
+];
+$('areaBody').innerHTML=arows.map(r=>`<tr><td class="k">${r[0]}</td><td class="v">${r[1]}</td></tr>`).join('');
+
+// ページ3 写真
+const P=D.写真||{};
+const cats=[["測定位置","測定位置（間取り図）",true],["中間","中間写真（施工状況）",false],["完成","完成写真",false],["プリントアウト","測定器のプリントアウト",true]];
+let ph='';
+let any=false;
+cats.forEach(([key,label,wide])=>{
+  const arr=P[key]||[]; if(!arr.length) return; any=true;
+  ph+=`<div class="sec">${label}</div><div class="photos">`;
+  arr.forEach((u,i)=>{ ph+=`<div class="ph${wide?' wide':''}"><img src="${u}"><div class="cap">${label} ${arr.length>1?(i+1):''}</div></div>`; });
+  ph+=`</div>`;
+});
+if(any){ $('photoWrap').innerHTML=ph; } else { $('photoPage').style.display='none'; }
+
+$('tbnote').textContent=isSample?"※サンプル表示中（office.htmlの「ブラウザでPDF」から実データが入ります）":"";
+
+// ===== log-logグラフ =====
+(function(){
+  const W=320,H=300, L=44,R=12,T=12,Bm=34; const pw=W-L-R, ph2=H-T-Bm;
+  const xmin=1,xmax=100, ymin=1,ymax=1000;
+  const gx=v=>L+(Math.log10(v)-Math.log10(xmin))/(Math.log10(xmax)-Math.log10(xmin))*pw;
+  const gy=v=>T+ph2-(Math.log10(v)-Math.log10(ymin))/(Math.log10(ymax)-Math.log10(ymin))*ph2;
+  let s='';
+  const minors=base=>{const r=[];for(let k=2;k<=9;k++)r.push(base*k);return r;};
+  [1,10].forEach(bx=>minors(bx).forEach(v=>{ if(v<=xmax) s+=`<line x1="${gx(v)}" y1="${T}" x2="${gx(v)}" y2="${T+ph2}" stroke="#eef1f5"/>`;}));
+  [1,10,100].forEach(by=>minors(by).forEach(v=>{ if(v<=ymax) s+=`<line x1="${L}" y1="${gy(v)}" x2="${L+pw}" y2="${gy(v)}" stroke="#eef1f5"/>`;}));
+  [1,10,100].forEach(v=>{ s+=`<line x1="${gx(v)}" y1="${T}" x2="${gx(v)}" y2="${T+ph2}" stroke="#c9d3df"/>`; s+=`<text x="${gx(v)}" y="${T+ph2+14}" font-size="9" fill="#5b6b80" text-anchor="middle">${v}</text>`;});
+  [1,10,100,1000].forEach(v=>{ s+=`<line x1="${L}" y1="${gy(v)}" x2="${L+pw}" y2="${gy(v)}" stroke="#c9d3df"/>`; s+=`<text x="${L-5}" y="${gy(v)+3}" font-size="9" fill="#5b6b80" text-anchor="end">${v}</text>`;});
+  s+=`<text x="${L+pw/2}" y="${H-4}" font-size="9.5" fill="#1a2332" text-anchor="middle">差圧 ΔP [Pa]</text>`;
+  s+=`<text x="10" y="${T+ph2/2}" font-size="9.5" fill="#1a2332" text-anchor="middle" transform="rotate(-90 10 ${T+ph2/2})">通気量 Q [m³/h]</text>`;
+  const line=x=> f.Q98*Math.pow(x/9.8, 1/f.n);
+  s+=`<line x1="${gx(1)}" y1="${gy(line(1))}" x2="${gx(100)}" y2="${gy(line(100))}" stroke="#d64545" stroke-width="1.6"/>`;
+  dP.forEach((d,i)=>{ s+=`<circle cx="${gx(d)}" cy="${gy(Q[i])}" r="3.2" fill="#2496ed" stroke="#fff" stroke-width="1"/>`;});
+  s+=`<rect x="${L}" y="${T}" width="${pw}" height="${ph2}" fill="none" stroke="#1a2332" stroke-width="1"/>`;
+  document.getElementById('chart').innerHTML=s;
+})();
+</script>
+</body>
+</html>
