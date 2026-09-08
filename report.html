@@ -22,14 +22,17 @@ label.f{display:block;margin-bottom:10px}
 label.f .lab{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
 label.f .lab .req{color:var(--red);font-weight:700;margin-left:3px}
 label.f .lab small{color:#8a97a8;font-weight:400}
-input,select{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;font-size:16px;background:#fafcfe;color:var(--ink);font-family:inherit}
+input,select{width:100%;min-width:0;max-width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;font-size:16px;background:#fafcfe;color:var(--ink);font-family:inherit}
+input[type=date],input[type=month]{-webkit-appearance:none;appearance:none;min-height:42px}
 input:focus,select:focus{outline:none;border-color:var(--blue);background:#fff}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.row2>*,.row3>*{min-width:0}
 @media(max-width:380px){.row3{grid-template-columns:1fr 1fr}}
-.unit{display:flex;align-items:center;gap:6px}.unit .u{font-size:12px;color:var(--muted);min-width:24px}
-.listrow{display:flex;gap:7px;align-items:center}
-.listrow select{flex:1}
+.unit{display:flex;align-items:center;gap:6px;min-width:0}.unit .u{font-size:12px;color:var(--muted);min-width:24px;flex:0 0 auto}
+.listrow{display:flex;gap:7px;align-items:center;min-width:0}
+.listrow select{flex:1 1 auto;min-width:0}
+.listrow .mini{flex:0 0 auto}
 .mini{padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#eef6ff;color:#1a6fb5;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
 .editor{border:1px dashed #b9c6d6;border-radius:11px;padding:11px;margin-top:8px;background:#f8fbff;display:none}
 .editor.open{display:block}
@@ -90,15 +93,12 @@ input[type="file"]{padding:8px;font-size:13px;background:#fff}
 
 <label class="f" style="margin-top:11px"><span class="lab">物件名 <small>（ファイル名になります）</small></span><input id="bldg" type="text" placeholder="例：〇〇様邸"></label>
 <label class="f"><span class="lab">物件の所在地</span><input id="addr" type="text" placeholder="愛知県…"></label>
-<div class="row2">
 <label class="f"><span class="lab">竣工年月<span class="req">必須</span> <small>（0000年0月）</small></span><input id="done" type="month"></label>
-<div>
-<label class="f" style="margin-bottom:4px"><span class="lab">構造・工法</span></label>
-<div id="host_構造工法"></div>
-</div>
-</div>
 
-<label class="f" style="margin-top:4px"><span class="lab">事業所（測定会社）</span></label>
+<label class="f"><span class="lab">構造・工法</span></label>
+<div id="host_構造工法"></div>
+
+<label class="f" style="margin-top:11px"><span class="lab">事業所（測定会社）</span></label>
 <div id="host_事業所"></div>
 <label class="f" style="margin-top:11px"><span class="lab">測定者<span class="req">必須</span></span></label>
 <div id="host_測定者"></div>
